@@ -1,61 +1,43 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-string getColorWord(const string& status) {
-    return status;
-}
+const int N = 1e5 + 5;
+vector<int> v[N];
+bool vis[N];
 
-void dfsVisit(int node, vector<vector<int>>& adj, vector<string>& color, vector<int>& result) {
-    color[node] = "gray";
-    cout << "Visiting node: " << node << " (status: " << getColorWord("gray") << ")" << endl;
-
-    for (int neighbor : adj[node]) {
-        if (color[neighbor] == "white") {
-            cout << "Discovered node: " << neighbor << " from " << node
-                 << " (status: " << getColorWord("gray") << ")" << endl;
-            dfsVisit(neighbor, adj, color, result);
-        }
+void dfs(int src)
+{
+    cout << src << endl;
+    vis[src] = true;
+    for (int child : v[src])
+    {
+        if (!vis[child])
+            dfs(child);
     }
-
-    color[node] = "black";
-    result.push_back(node);
-    cout << "Finished node: " << node << " (status: " << getColorWord("black") << ")" << endl;
 }
 
-void dfs(int V, vector<vector<int>>& adj, int start) {
-    vector<string> color(V, "white");
-    vector<int> result;
-
-    cout << "Starting DFS from node: " << start << " (status: " << getColorWord("gray") << ")" << endl;
-    dfsVisit(start, adj, color, result);
-
-    cout << "Final DFS order: ";
-    for (int x : result)
-        cout << x << " ";
-    cout << endl;
-}
-
-int main() {
-    int V, E;
-    cout << "Enter the number of vertices: ";
-    cin >> V;
+int main()
+{
+    int n, e;
+    cout << "Enter the number of node: ";
+    cin >> n;
     cout << "Enter the number of edges: ";
-    cin >> E;
-
-    vector<vector<int>> adj(V);
-    cout << "Enter edges (u v):" << endl;
-
-    for (int i = 0; i < E; i++) {
-        int u, v;
-        cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u); // undirected graph
+    cin >> e;
+    cout << "Enter edges (a b):" << endl;
+    while (e--)
+    {
+        int a, b;
+        cin >> a >> b;
+        v[a].push_back(b);
+        v[b].push_back(a);
     }
 
     int start;
-    cout << "Enter the starting node for DFS: ";
+    cout << "Enter starting node for DFS: ";
     cin >> start;
 
-    dfs(V, adj, start);
+    memset(vis, false, sizeof(vis));
+    dfs(start);
+
     return 0;
 }
