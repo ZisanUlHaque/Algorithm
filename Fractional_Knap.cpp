@@ -1,37 +1,45 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
 
+bool compare(pair<int, int> a, pair<int, int> b) {
+    double ratio1 = (double)a.first / a.second;
+    double ratio2 = (double)b.first / b.second;
+    return ratio1 > ratio2;
+}
+
 int main() {
-    int n, W;
+    int n, c;
     cout << "Enter number of items and knapsack capacity: ";
-    cin >> n >> W;
+    cin >> n >> c;
 
-    vector<pair<int, int>> items(n); // {value, weight}
+    vector<pair<int, int>> items(n); // প্রতিটি জোড়ায়: {মান, ওজন}
+
     cout << "Enter value and weight of each item:\n";
-    for (int i = 0; i < n; ++i)
+    for (int i = 0; i < n; i++) {
         cin >> items[i].first >> items[i].second;
+    }
 
-    // Sort by value/weight ratio (descending)                        
-    //In C++, auto is a keyword that automatically figures out the                                                                           
-            //data type based on what you assign to it .
+    // রেশিও অনুযায়ী বড় থেকে ছোট সাজানো
+    sort(items.begin(), items.end(), compare);
 
-    sort(items.begin(), items.end(), [](auto a, auto b) {
-        return (double)a.first / a.second > (double)b.first / b.second;
-    });
+    double maxValue = 0.0;
 
-    double total = 0;
+    for (int i = 0; i < n; i++) {
+        int value = items[i].first;
+        int weight = items[i].second;
 
-    for (auto [val, wt] : items) {
-        if (W == 0) break;
-        if (wt <= W) {
-            total += val;
-            W -= wt;
+        if (c == 0) break;
+
+        if (weight <= c) {
+            maxValue += value;         // পুরো আইটেম নেই
+            c -= weight;
         } else {
-            total += val * (double(W) / wt);
+            // আংশিক আইটেম নেই
+            maxValue += value * ((double)c / weight);
             break;
         }
     }
 
-    cout << "Max value = " << total << endl;
+    cout << "Max value = " << maxValue << endl;
     return 0;
 }
