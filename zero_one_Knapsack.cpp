@@ -1,46 +1,45 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
 
-int knapsack(int W, vector<int> &val, vector<int> &wt) {
-    int n = val.size();
-    vector<vector<int>> K(n + 1, vector<int>(W + 1, 0));
-
-    for (int i = 0; i <= n; i++) {
-        for (int w = 0; w <= W; w++) {
-            if (i == 0 || w == 0)
-                K[i][w] = 0;
-            else if (wt[i - 1] <= w)
-                K[i][w] = max(val[i - 1] + K[i - 1][w - wt[i - 1]], K[i - 1][w]);
-            else
-                K[i][w] = K[i - 1][w];
-        }
-    }
-
-    return K[n][W];
-}
-
 int main() {
-    int n, W;
+    int n, m;
     cout << "Enter number of items: ";
     cin >> n;
 
-    vector<int> val(n), wt(n);
+    cout << "Enter knapsack capacity: ";
+    cin >> m;
 
-    cout << "Enter values of the items:\n";
-    for (int i = 0; i < n; ++i) {
-        cin >> val[i];
+    vector<int> P(n + 1);  // P[1..n] for profits
+    vector<int> wt(n + 1); // wt[1..n] for weights
+
+    cout << "Enter profits of items:\n";
+    for (int i = 1; i <= n; i++) {
+        cin >> P[i];
     }
 
-    cout << "Enter weights of the items:\n";
-    for (int i = 0; i < n; ++i) {
+    cout << "Enter weights of items:\n";
+    for (int i = 1; i <= n; i++) {
         cin >> wt[i];
     }
 
-    cout << "Enter capacity of knapsack: ";
-    cin >> W;
+    // Create K[i][w] table (n+1) x (m+1)
+    vector<vector<int>> K(n + 1, vector<int>(m + 1, 0));
 
-    cout << "Maximum value in knapsack = " << knapsack(W, val, wt) << endl;
+    // Dynamic Programming logic (1-based)
+    for (int i = 0; i <= n; i++) {
+        for (int w = 0; w <= m; w++) {
+            if (i == 0 || w == 0) {
+                K[i][w] = 0;
+            } else if (wt[i] <= w) {
+                K[i][w] = max(P[i] + K[i - 1][w - wt[i]], K[i - 1][w]);
+            } else {
+                K[i][w] = K[i - 1][w];
+            }
+        }
+    }
 
+    cout << "Maximum profit: " << K[n][m] << endl;
     return 0;
 }
+
 
